@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARKING LOT SURVEILLANCE - AI Surveillance Hub</title>
+    <!-- Google Fonts for futuristic, clean, and premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="cyberpunk-theme">
+    
+    <!-- Grid Overlay Effect -->
+    <div class="grid-overlay"></div>
+    <div class="scanline-overlay"></div>
+
+    <!-- Audio Alert (High-tech notification) -->
+    <audio id="siren-sound" src="https://assets.mixkit.co/active_storage/sids/2016/2016-84.wav" loop></audio>
+
+    <!-- Main Container -->
+    <main class="app-container">
+
+        <!-- 1. LANDING PAGE (Exact match to screenshot) -->
+        <section id="landing-section" class="landing-section">
+            <div class="glow-container">
+                <!-- Red Glowing Card -->
+                <div class="upload-card">
+                    <!-- Circular Icon Container -->
+                    <div class="brand-shield-wrapper">
+                        <div class="brand-shield">
+                            <!-- Shield with pulse waveform inside -->
+                            <svg class="shield-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                <path d="M8 12h2.5l1.5-3 2 6 1.5-3H16" class="waveform-path" stroke-width="2" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="landing-title">PARKING LOT SURVEILLANCE</h1>
+
+                    <!-- Drag & Drop Zone -->
+                    <div id="drop-zone" class="drag-drop-zone">
+                        <input type="file" id="file-input" accept=".mp4,.webm,.avi,.mkv" style="display: none;">
+                        
+                        <!-- Upload Arrow Icon -->
+                        <div class="upload-icon-wrapper">
+                            <svg class="upload-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+
+                        <p class="drag-text">DRAG & DROP SURVEILLANCE FOOTAGE</p>
+                        <p class="drag-subtext">SUPPORTS MP4, WEBM, MKV</p>
+
+                        <!-- Browse Directory Button -->
+                        <button id="browse-btn" class="browse-btn">BROWSE DIRECTORY</button>
+                    </div>
+
+                    <!-- Default Stock Stream Link -->
+                    <div class="test-stream-footer">
+                        OR QUICKLY TEST WITH: <a href="#" id="stock-stream-link" class="stock-stream-link">DEFAULT STOCK STREAM</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SURVEILLANCE DASHBOARD (Revealed post selection) -->
+        <section id="dashboard-section" class="dashboard-section hidden">
+            <!-- Header HUD bar -->
+            <header class="hud-header">
+                <div class="header-left">
+                    <div class="blink-dot"></div>
+                    <span class="system-tag">system active</span>
+                    <span class="divider">//</span>
+                    <span class="current-file-label"><span id="source-name-display">STOCK_STREAM.avi</span></span>
+                </div>
+                <div class="header-title-center">
+                    ai intelligent surveillance  system
+                </div>
+                <div class="header-right">
+                    <span class="time-display" id="time-display">00:00:00:00</span>
+                </div>
+            </header>
+
+            <!-- Main Layout Grid -->
+            <div class="dashboard-grid">
+                
+                <!-- Left Grid: Camera Feed & Telemetry -->
+                <div class="grid-left">
+                    <!-- Stream Player Window -->
+                    <div class="window-card stream-window">
+                        <div class="window-header">
+                            <span class="window-title"><span class="neon-text">LIVE SURVEILLANCE STREAM</span> // CAMERA_01</span>
+                            <div class="window-controls">
+                                <span class="badge red-alert-badge" id="threat-badge">SAFE</span>
+                            </div>
+                        </div>
+                        <div class="video-container-wrapper">
+                            <div class="video-hud-overlay">
+                                <div class="corner top-left"></div>
+                                <div class="corner top-right"></div>
+                                <div class="corner bottom-left"></div>
+                                <div class="corner bottom-right"></div>
+                                <div class="rec-indicator">
+                                    <span class="rec-dot"></span>
+                                    <span>ANALYZING</span>
+                                </div>
+                            </div>
+                            <img id="stream-player" src="" alt="Surveillance Stream Feed" class="stream-image">
+                            
+                            <!-- Loading Spinner Overlay -->
+                            <div id="stream-loader" class="stream-loader">
+                                <div class="loader-spinner"></div>
+                                <p>INITIALIZING YOLO INFERENCE MATRIX...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Telemetry Gauges -->
+                    <div class="telemetry-grid">
+                        <div class="telemetry-card">
+                            <div class="tel-label">FPS RATE</div>
+                            <div class="tel-value" id="tel-fps">--</div>
+                            <div class="tel-sub">Matrix Processing</div>
+                        </div>
+                        <div class="telemetry-card">
+                            <div class="tel-label">THREAT INDEX</div>
+                            <div class="tel-value glow-red" id="tel-threat">0%</div>
+                            <div class="threat-bar-container">
+                                <div class="threat-bar" id="tel-threat-bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="telemetry-card">
+                            <div class="tel-label">ACTIVE OBJECTS</div>
+                            <div class="tel-value" id="tel-objects">0</div>
+                            <div class="tel-sub">Detections in Scene</div>
+                        </div>
+                        <div class="telemetry-card">
+                            <div class="tel-label">THREAT STATUS</div>
+                            <div class="tel-value" id="tel-status" style="font-size: 0.9rem; color: var(--neon-green);">SECURE</div>
+                            <div class="tel-sub">Real-Time Threat Level</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Grid: Controls, Charts, Logs -->
+                <div class="grid-right">
+                    
+                    <!-- Inference Control Center -->
+                    <div class="window-card control-window">
+                        <div class="window-header">
+                            <span class="window-title"><span class="neon-text">INFERENCE CONTROLLER</span> // CONFIG</span>
+                        </div>
+                        <div class="window-content">
+                            <!-- Slider Controls -->
+                            <div class="control-row">
+                                <label for="conf-slider" class="control-label">CONFIDENCE THRESHOLD</label>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="conf-slider" min="0.05" max="1.00" step="0.05" value="0.25" class="cyber-slider">
+                                    <span class="slider-value" id="conf-val">0.25</span>
+                                </div>
+                            </div>
+
+                            <!-- Checkbox Toggles -->
+                            <div class="control-row">
+                                <div class="control-label">SURVEILLANCE FILTERS</div>
+                                <div class="checkbox-grid">
+                                    <label class="cyber-checkbox-label">
+                                        <input type="checkbox" class="class-toggle" data-class="0" checked>
+                                        <span class="checkbox-custom normal-color"></span>
+                                        <span class="class-label">Normal</span>
+                                    </label>
+                                    <label class="cyber-checkbox-label">
+                                        <input type="checkbox" class="class-toggle" data-class="1" checked>
+                                        <span class="checkbox-custom suspicious-color"></span>
+                                        <span class="class-label">Suspicious</span>
+                                    </label>
+                                    <label class="cyber-checkbox-label">
+                                        <input type="checkbox" class="class-toggle" data-class="2" checked>
+                                        <span class="checkbox-custom violation-color"></span>
+                                        <span class="class-label">Violation</span>
+                                    </label>
+                                    <label class="cyber-checkbox-label">
+                                        <input type="checkbox" class="class-toggle" data-class="3" checked>
+                                        <span class="checkbox-custom assault-color"></span>
+                                        <span class="class-label">Assault</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Buttons Deck -->
+                            <div class="buttons-deck">
+                                <button id="siren-toggle-btn" class="cyber-btn border-red">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                        <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+                                        <line x1="12" y1="19" x2="12" y2="22"/>
+                                    </svg>
+                                    MUTE SYSTEM SIREN
+                                </button>
+                                <button id="change-source-btn" class="cyber-btn border-white">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                                        <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+                                    </svg>
+                                    DISCONNECT STREAM
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Threat Analytics Timeline Chart -->
+                    <div class="window-card chart-window">
+                        <div class="window-header">
+                            <span class="window-title"><span class="neon-text">THREAT TIMELINE INDEX</span> // LIVE ANALYTICS</span>
+                        </div>
+                        <div class="window-content chart-container">
+                            <canvas id="threat-chart" width="400" height="130"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Cyberpunk Terminal Log -->
+                    <div class="window-card log-window">
+                        <div class="window-header">
+                            <span class="window-title"><span class="neon-text">SECURITY EVENTS FEED</span> // LOG_STREAM</span>
+                            <span class="pulse-status-log">STREAMING LIVE</span>
+                        </div>
+                        <div class="terminal-log" id="terminal-log">
+                            <div class="log-entry system-msg">[SYSTEM] [INIT] Neural Threat Matrix initialized and calibrated. Ready.</div>
+                            <div class="log-entry system-msg">[SYSTEM] [YOLO] YOLO v8 weights loaded successfully. Conf threshold preset: 0.25</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Glassy Analysis Summary Overlay (Hidden by default) -->
+        <div id="summary-overlay" class="summary-overlay hidden">
+            <div class="summary-modal">
+                <div class="summary-header">
+                    <div class="summary-icon-wrapper">
+                        <svg class="summary-shield-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            <path d="M8 12h2.5l1.5-3 2 6 1.5-3H16" class="waveform-path" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <h2>SURVEILLANCE ANALYSIS REPORT</h2>
+                    <p>AI Neural Matrix Threat Assessment Complete</p>
+                </div>
+                <div class="summary-body">
+                    <div class="summary-field">
+                        <span class="lbl">ANALYZED SOURCE:</span>
+                        <span class="val" id="sum-filename">STOCK_STREAM.avi</span>
+                    </div>
+                    
+                    <!-- FINAL STATUS FLAG (Dynamic color and glow) -->
+                    <div class="final-status-container" id="sum-status-box">
+                        <span class="final-status-label">FINAL PREDICTED CONDITION:</span>
+                        <span class="final-status-value" id="sum-condition">NORMAL CONDITION</span>
+                    </div>
+
+                    <div class="summary-stats-grid">
+                        <div class="stat-box">
+                            <span class="num" id="sum-frames">0</span>
+                            <span class="desc">Frames Processed</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="num" id="sum-threat-peak">0%</span>
+                            <span class="desc">Peak Threat Index</span>
+                        </div>
+                    </div>
+
+                    <div class="class-distribution-list">
+                        <h3>THREAT DETECTION METRICS</h3>
+                        <div class="dist-row">
+                            <span>Assault Incidents:</span>
+                            <span class="val text-red" id="sum-assault-count">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span>Suspicious Incidents:</span>
+                            <span class="val text-orange" id="sum-suspicious-count">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span>Violations Detected:</span>
+                            <span class="val text-pink" id="sum-violation-count">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span>Normal Activity Frames:</span>
+                            <span class="val text-green" id="sum-normal-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="report-recommendation" id="sum-recommendation">
+                        ZONE SECURE. No malicious or abnormal behavior detected.
+                    </div>
+                </div>
+                <div class="summary-footer">
+                    <button class="browse-btn" id="summary-close-btn" style="width: 100%; height: 42px; font-size: 0.82rem; margin-top: 5px;">ACKNOWLEDGE & DISMISS</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
